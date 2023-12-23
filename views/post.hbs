@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{post.user.username}}'s Post</title>
+  <!-- ... other head elements ... -->
+</head>
+<body>
+  <main>
+    <article class="post">
+      <header>
+        <h1>{{post.user.username}}'s Post</h1>
+        <p>Publicado el {{post.createdAt}}</p>
+      </header>
+      <p>{{post.body}}</p>
+      <!-- ... other post details ... -->
+    </article>
+
+    <section id="comments">
+      <h2>Comentarios</h2>
+      {{#if post.comments}}
+        <ul>
+          {{#each post.comments}}
+            <li>{{this.user.username}}: {{this.body}}</li>
+            <button class="delete-comment" data-comment-id="{{this.id}}">Eliminar</button>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p>Sé el primero en comentar.</p>
+      {{/if}}
+    </section>
+
+    <form action="/forum/post/{{post.id}}/comment" method="POST">
+      <textarea name="comment" placeholder="Añade un comentario..." required></textarea>
+      <button type="submit">Enviar Comentario</button>
+    </form>
+  </main>
+  <script>
+document.querySelectorAll('.delete-comment').forEach(button => {
+  button.addEventListener('click', function() {
+    const commentId = this.getAttribute('data-comment-id');
+    // Llamar a la función para eliminar el comentario
+    deleteComment(commentId);
+  });
+});
+
+function deleteComment(commentId) {
+  fetch(`/comment/${commentId}/delete`, { method: 'POST' })
+    .then(response => {
+      if (response.ok) {
+        // Logic to remove the comment from the DOM or refresh the page
+      } else {
+        console.error('Error al eliminar el comentario');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+
+
+
+
+  </script>
+  
+</body>
+</html>
